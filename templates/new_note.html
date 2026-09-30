@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}New note · Flask Notes{% endblock %}
+
+{% block content %}
+    <h2>New note</h2>
+
+    {% if error %}
+        <p style="color: #b00020;">{{ error }}</p>
+    {% endif %}
+
+    <!-- method="post" makes the browser send the fields in the request body.
+         action is the URL to send them to (this same page). -->
+    <form method="post" action="{{ url_for('new_note') }}">
+        <p>
+            <label for="title">Title</label><br>
+            <!-- name="title" is the key Flask reads with request.form["title"] -->
+            <input id="title" name="title" value="{{ title or '' }}" required>
+        </p>
+        <p>
+            <label for="body">Body</label><br>
+            <textarea id="body" name="body" rows="6" cols="40">{{ body or '' }}</textarea>
+        </p>
+        <button type="submit">Save note</button>
+    </form>
+{% endblock %}

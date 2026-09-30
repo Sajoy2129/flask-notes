@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from flask import Flask, render_template
+from flask import Flask, redirect, render_template, request, url_for
 
 import db
 
@@ -23,6 +23,31 @@ def create_app(database_path=None):
     @app.route("/")
     def home():
         return render_template("index.html", notes=db.get_all_notes())
+
+    # This route accepts two methods:
+    #   GET  -> show the empty form
+    #   POST -> the form was submitted, so save the note
+    @app.route("/notes/new", methods=["GET", "POST"])
+    def new_note():
+        if request.method == "POST":
+            # request.form holds the fields the browser sent, by their name=""
+            title = request.form.get("title", "").strip()
+            body = request.form.get("body", "").strip()
+
+            if not title:
+                # Show the form again with an error, keeping what was typed
+                return render_template(
+                    "new_note.html",
+                    error="Title is required.",
+                    title=title,
+                    body=body,
+                ), 400
+
+            db.add_note(title, body)
+            # Send the browser to the home page (see "Post/Redirect/Get")
+            return redirect(url_for("home"))
+
+        return render_template("new_note.html")
 
     # A command you can run in the terminal: flask --app app seed
     @app.cli.command("seed")
