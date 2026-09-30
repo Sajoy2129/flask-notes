@@ -7,7 +7,7 @@
 
     <!-- method="get" puts the field in the URL (/?q=...), so a search
          is just a link: you can bookmark it or press Back. -->
-    <form method="get" action="{{ url_for('home') }}">
+    <form class="search-form" method="get" action="{{ url_for('home') }}">
         <label for="q">Search titles</label>
         <input id="q" name="q" type="search" value="{{ query }}">
         <button type="submit">Search</button>
@@ -21,7 +21,7 @@
     {% endif %}
 
     {% if notes %}
-        <ul>
+        <ul class="note-list">
         {% for note in notes %}
             <li>
                 <strong>

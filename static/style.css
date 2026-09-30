@@ -1,0 +1,149 @@
+/* ---------- Colors & sizes kept in one place ----------
+   CSS "custom properties" (variables) let us change the whole
+   look by editing just these lines. */
+:root {
+    --bg: #f6f7f9;
+    --card: #ffffff;
+    --text: #1f2933;
+    --muted: #6b7280;
+    --border: #e2e5ea;
+    --accent: #2563eb;
+    --accent-dark: #1d4ed8;
+    --danger: #b00020;
+    --radius: 8px;
+}
+
+/* ---------- Page basics ---------- */
+* {
+    box-sizing: border-box;  /* padding no longer makes boxes wider */
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.6;
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* ---------- Header bar ---------- */
+header {
+    display: flex;                   /* put title and nav side by side */
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.25rem;
+}
+
+header h1 a {
+    color: var(--text);
+}
+
+/* ---------- Main content column ---------- */
+main {
+    max-width: 720px;   /* keeps lines short enough to read comfortably */
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+h2 {
+    margin-top: 0;
+}
+
+small {
+    color: var(--muted);
+}
+
+/* ---------- Forms ---------- */
+input,
+textarea {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font: inherit;      /* use the page font, not the browser default */
+    background: var(--card);
+}
+
+input:focus,
+textarea:focus {
+    outline: 2px solid var(--accent);
+    border-color: transparent;
+}
+
+/* The search box sits on one line with its button */
+.search-form {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.search-form input {
+    flex: 1;            /* take up the leftover space */
+}
+
+button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: var(--radius);
+    background: var(--accent);
+    color: white;
+    font: inherit;
+    cursor: pointer;
+}
+
+button:hover {
+    background: var(--accent-dark);
+}
+
+button.danger {
+    background: var(--danger);
+}
+
+button.danger:hover {
+    background: #8a0019;
+}
+
+.error {
+    color: var(--danger);
+}
+
+/* ---------- Note list: each note is a "card" ---------- */
+.note-list {
+    list-style: none;   /* remove the bullet points */
+    padding: 0;
+}
+
+.note-list li {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.note-list li p {
+    margin: 0.5rem 0 0;
+    white-space: pre-wrap;  /* keep line breaks the user typed */
+}
+
+/* The single-note page body also keeps line breaks */
+.note-body {
+    white-space: pre-wrap;
+}

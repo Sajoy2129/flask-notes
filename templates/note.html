@@ -5,7 +5,7 @@
 {% block content %}
     <h2>{{ note.title }}</h2>
     <p><small>Created {{ note.created_at | format_date }}</small></p>
-    <p>{{ note.body }}</p>
+    <p class="note-body">{{ note.body }}</p>
 
     <!-- Editing only *shows* a form, so a normal link (GET) is fine here -->
     <p><a href="{{ url_for('edit_note', note_id=note.id) }}">Edit note</a></p>
@@ -14,7 +14,7 @@
          onsubmit asks "are you sure?"; returning false cancels the submit. -->
     <form method="post" action="{{ url_for('delete_note', note_id=note.id) }}"
           onsubmit="return confirm('Delete this note?');">
-        <button type="submit">Delete note</button>
+        <button type="submit" class="danger">Delete note</button>
     </form>
 
     <p><a href="{{ url_for('home') }}">← Back to all notes</a></p>

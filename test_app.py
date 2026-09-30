@@ -213,3 +213,13 @@ def test_home_and_note_pages_show_created_date(app):
     client = app.test_client()
     assert b"15 Jan 2025" in client.get("/").data
     assert b"Created 15 Jan 2025" in client.get(f"/notes/{note_id}").data
+
+
+def test_pages_link_the_stylesheet_and_it_is_served(app):
+    client = app.test_client()
+    assert b"/static/style.css" in client.get("/").data
+
+    response = client.get("/static/style.css")
+    assert response.status_code == 200
+    assert b"body" in response.data
+    response.close()  # Flask streams static files; close to free the file
