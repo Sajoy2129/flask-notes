@@ -1,7 +1,7 @@
 import pytest
 
 import db
-from app import create_app
+from app import create_app, format_date
 
 
 @pytest.fixture
@@ -190,3 +190,26 @@ def test_empty_search_shows_all_notes(app):
 
     assert b"One" in response.data
     assert b"Two" in response.data
+
+
+def test_format_date_turns_timestamp_into_readable_date():
+    assert format_date("2026-09-30 14:05:12") == "30 Sep 2026"
+
+
+def set_created_at(note_id, timestamp):
+    """Test helper: give a note a fixed creation time."""
+    connection = db.get_db()
+    connection.execute(
+        "UPDATE notes SET created_at = ? WHERE id = ?", (timestamp, note_id)
+    )
+    connection.commit()
+
+
+def test_home_and_note_pages_show_created_date(app):
+    with app.app_context():
+        note_id = db.add_note("Dated note")
+        set_created_at(note_id, "2025-01-15 09:30:00")
+
+    client = app.test_client()
+    assert b"15 Jan 2025" in client.get("/").data
+    assert b"Created 15 Jan 2025" in client.get(f"/notes/{note_id}").data

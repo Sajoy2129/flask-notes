@@ -1,8 +1,17 @@
+from datetime import datetime
 from pathlib import Path
 
 from flask import Flask, abort, redirect, render_template, request, url_for
 
 import db
+
+
+def format_date(timestamp):
+    """Turn SQLite's '2026-09-30 14:05:12' into '30 Sep 2026'."""
+    # strptime = "string parse time": read text into a datetime object.
+    # strftime = "string format time": write a datetime back out as text.
+    parsed = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
+    return parsed.strftime("%d %b %Y")
 
 
 def create_app(database_path=None):
@@ -16,6 +25,9 @@ def create_app(database_path=None):
     app = Flask(__name__)
     app.config["DATABASE"] = database_path or Path(__file__).parent / "notes.db"
     db.init_app(app)
+
+    # Let templates use it as a filter: {{ note.created_at | format_date }}
+    app.add_template_filter(format_date)
 
     # A route connects a URL to a Python function.
     # When someone visits "/" (the home page), Flask calls home()

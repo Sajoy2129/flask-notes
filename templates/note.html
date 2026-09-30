@@ -4,7 +4,7 @@
 
 {% block content %}
     <h2>{{ note.title }}</h2>
-    <p><small>Created {{ note.created_at }}</small></p>
+    <p><small>Created {{ note.created_at | format_date }}</small></p>
     <p>{{ note.body }}</p>
 
     <!-- Editing only *shows* a form, so a normal link (GET) is fine here -->
