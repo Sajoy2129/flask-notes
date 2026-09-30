@@ -23,12 +23,12 @@
     {% if notes %}
         <ul class="note-list">
         {% for note in notes %}
-            <li>
+            <li class="tile">
                 <strong>
                     <a href="{{ url_for('show_note', note_id=note.id) }}">{{ note.title }}</a>
                 </strong>
-                <small>· {{ note.created_at | format_date }}</small>
                 <p>{{ note.body }}</p>
+                <span class="chip">{{ note.created_at | format_date }}</span>
             </li>
         {% endfor %}
         </ul>

@@ -124,23 +124,52 @@ button.danger:hover {
     color: var(--danger);
 }
 
-/* ---------- Note list: each note is a "card" ---------- */
+/* ---------- Note list: a grid of tiles ---------- */
 .note-list {
     list-style: none;   /* remove the bullet points */
     padding: 0;
+    display: grid;
+    /* As many 200px-wide columns as fit; they stretch to fill the row.
+       On a phone this becomes one column automatically. */
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
 }
 
-.note-list li {
+.tile {
+    display: flex;
+    flex-direction: column;     /* stack title, body, chip vertically */
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1rem 1.25rem;
-    margin-bottom: 1rem;
+    border-radius: 12px;
+    padding: 1rem;
+    min-height: 140px;
+    transition: transform 0.15s, box-shadow 0.15s;
 }
 
-.note-list li p {
-    margin: 0.5rem 0 0;
-    white-space: pre-wrap;  /* keep line breaks the user typed */
+.tile:hover {
+    transform: translateY(-2px);    /* lift the tile slightly */
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.tile p {
+    margin: 0.5rem 0;
+    color: var(--muted);
+    /* Show at most 3 lines of the body, then "..." */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* A chip: a small rounded label */
+.chip {
+    margin-top: auto;           /* push the chip to the tile's bottom */
+    align-self: flex-start;     /* only as wide as its text */
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;       /* huge radius = fully round ends */
+    background: #e8efff;
+    color: var(--accent-dark);
+    font-size: 0.8rem;
 }
 
 /* The single-note page body also keeps line breaks */
