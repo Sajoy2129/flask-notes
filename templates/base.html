@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Child pages can replace this block with their own title -->
+    <title>{% block title %}Flask Notes{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <h1><a href="/">Flask Notes</a></h1>
+    </header>
+
+    <main>
+        <!-- Each child page puts its own content here -->
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
