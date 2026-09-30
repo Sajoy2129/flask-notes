@@ -145,3 +145,48 @@ def test_editing_missing_note_returns_404(app):
     client = app.test_client()
     assert client.get("/notes/999/edit").status_code == 404
     assert client.post("/notes/999/edit", data={"title": "x"}).status_code == 404
+
+
+def test_search_shows_only_matching_titles(app):
+    with app.app_context():
+        db.add_note("Buy milk")
+        db.add_note("Call mom")
+
+    response = app.test_client().get("/?q=milk")
+
+    assert b"Buy milk" in response.data
+    assert b"Call mom" not in response.data
+
+
+def test_search_ignores_upper_and_lower_case(app):
+    with app.app_context():
+        db.add_note("Learn Flask")
+        titles = [note["title"] for note in db.search_notes("flask")]
+
+    assert titles == ["Learn Flask"]
+
+
+def test_search_only_looks_at_titles_not_body(app):
+    with app.app_context():
+        db.add_note("Shopping", "milk and eggs")
+        assert db.search_notes("milk") == []
+
+
+def test_search_with_no_matches_shows_message(app):
+    with app.app_context():
+        db.add_note("Something")
+
+    response = app.test_client().get("/?q=zzz")
+
+    assert b"No notes match your search." in response.data
+
+
+def test_empty_search_shows_all_notes(app):
+    with app.app_context():
+        db.add_note("One")
+        db.add_note("Two")
+
+    response = app.test_client().get("/?q=+")  # "+" is a space in a URL
+
+    assert b"One" in response.data
+    assert b"Two" in response.data

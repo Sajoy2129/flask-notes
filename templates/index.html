@@ -5,6 +5,21 @@
 {% block content %}
     <h2>All notes</h2>
 
+    <!-- method="get" puts the field in the URL (/?q=...), so a search
+         is just a link: you can bookmark it or press Back. -->
+    <form method="get" action="{{ url_for('home') }}">
+        <label for="q">Search titles</label>
+        <input id="q" name="q" type="search" value="{{ query }}">
+        <button type="submit">Search</button>
+        {% if query %}
+            <a href="{{ url_for('home') }}">Clear</a>
+        {% endif %}
+    </form>
+
+    {% if query %}
+        <p>Showing notes with “{{ query }}” in the title.</p>
+    {% endif %}
+
     {% if notes %}
         <ul>
         {% for note in notes %}
@@ -16,6 +31,8 @@
             </li>
         {% endfor %}
         </ul>
+    {% elif query %}
+        <p>No notes match your search.</p>
     {% else %}
         <p>No notes yet.</p>
     {% endif %}

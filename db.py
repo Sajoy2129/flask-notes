@@ -42,6 +42,21 @@ def get_all_notes():
     ).fetchall()
 
 
+def search_notes(query):
+    """Return notes whose title contains `query`, newest first.
+
+    LIKE is SQL's pattern match: % means "any text here", so
+    '%milk%' matches "Buy milk", "Milkshake", etc. In SQLite it
+    ignores upper/lower case for English letters.
+    """
+    db = get_db()
+    return db.execute(
+        "SELECT id, title, body, created_at FROM notes"
+        " WHERE title LIKE ? ORDER BY id DESC",
+        (f"%{query}%",),
+    ).fetchall()
+
+
 def get_note(note_id):
     """Return one note by its id, or None if it doesn't exist."""
     db = get_db()

@@ -20,9 +20,17 @@ def create_app(database_path=None):
     # A route connects a URL to a Python function.
     # When someone visits "/" (the home page), Flask calls home()
     # and sends whatever it returns to the browser.
+    #
+    # An optional search comes in the URL as /?q=milk.
+    # request.args holds those "query string" values (the part after ?).
     @app.route("/")
     def home():
-        return render_template("index.html", notes=db.get_all_notes())
+        query = request.args.get("q", "").strip()
+        if query:
+            notes = db.search_notes(query)
+        else:
+            notes = db.get_all_notes()
+        return render_template("index.html", notes=notes, query=query)
 
     # This route accepts two methods:
     #   GET  -> show the empty form
