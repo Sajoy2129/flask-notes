@@ -1,5 +1,23 @@
+# Virtual environment: rebuild it with `pip install -r requirements.txt`
 .venv/
+
+# Python's compiled cache files, recreated automatically
 __pycache__/
+*.pyc
+
+# pytest's cache between test runs
 .pytest_cache/
+
 # The database holds your data, not code, so keep it out of git
 *.db
+
+# Secrets such as API keys or a Flask SECRET_KEY must never be committed
+.env
+
+# Flask's per-machine instance folder
+instance/
+
+# macOS and editor clutter
+.DS_Store
+.vscode/
+.idea/
