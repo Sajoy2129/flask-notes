@@ -59,3 +59,41 @@ def test_empty_title_shows_error_and_saves_nothing(app):
     assert b"Title is required." in response.data
     with app.app_context():
         assert db.get_all_notes() == []
+
+
+def test_note_page_shows_the_note(app):
+    with app.app_context():
+        note_id = db.add_note("My note", "Some details")
+
+    response = app.test_client().get(f"/notes/{note_id}")
+    assert response.status_code == 200
+    assert b"My note" in response.data
+    assert b"Some details" in response.data
+
+
+def test_missing_note_returns_404(app):
+    response = app.test_client().get("/notes/999")
+    assert response.status_code == 404
+
+
+def test_delete_removes_note_and_redirects(app):
+    with app.app_context():
+        note_id = db.add_note("Delete me")
+
+    response = app.test_client().post(f"/notes/{note_id}/delete")
+
+    assert response.status_code == 302
+    with app.app_context():
+        assert db.get_note(note_id) is None
+
+
+def test_delete_does_not_work_with_get(app):
+    with app.app_context():
+        note_id = db.add_note("Keep me")
+
+    response = app.test_client().get(f"/notes/{note_id}/delete")
+
+    # 405 = "Method Not Allowed"; the note must still exist
+    assert response.status_code == 405
+    with app.app_context():
+        assert db.get_note(note_id) is not None

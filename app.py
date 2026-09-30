@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, abort, redirect, render_template, request, url_for
 
 import db
 
@@ -48,6 +48,24 @@ def create_app(database_path=None):
             return redirect(url_for("home"))
 
         return render_template("new_note.html")
+
+    # <int:note_id> is a URL variable: /notes/3 calls show_note(note_id=3).
+    # "int:" means only whole numbers match, so /notes/abc gives a 404.
+    @app.route("/notes/<int:note_id>")
+    def show_note(note_id):
+        note = db.get_note(note_id)
+        if note is None:
+            abort(404)  # Stop here and send a "404 Not Found" page
+        return render_template("note.html", note=note)
+
+    # Deleting changes data, so this route only accepts POST.
+    # A plain link (GET) can't trigger it by accident.
+    @app.route("/notes/<int:note_id>/delete", methods=["POST"])
+    def delete_note(note_id):
+        if db.get_note(note_id) is None:
+            abort(404)
+        db.delete_note(note_id)
+        return redirect(url_for("home"))
 
     # A command you can run in the terminal: flask --app app seed
     @app.cli.command("seed")

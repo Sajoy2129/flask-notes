@@ -42,6 +42,22 @@ def get_all_notes():
     ).fetchall()
 
 
+def get_note(note_id):
+    """Return one note by its id, or None if it doesn't exist."""
+    db = get_db()
+    return db.execute(
+        "SELECT id, title, body, created_at FROM notes WHERE id = ?",
+        (note_id,),
+    ).fetchone()
+
+
+def delete_note(note_id):
+    """Delete one note by its id."""
+    db = get_db()
+    db.execute("DELETE FROM notes WHERE id = ?", (note_id,))
+    db.commit()
+
+
 def add_note(title, body=""):
     """Save a new note and return its id."""
     db = get_db()

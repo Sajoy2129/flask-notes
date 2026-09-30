@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}{{ note.title }} · Flask Notes{% endblock %}
+
+{% block content %}
+    <h2>{{ note.title }}</h2>
+    <p><small>Created {{ note.created_at }}</small></p>
+    <p>{{ note.body }}</p>
+
+    <!-- Delete is a small form, not a link, because it must be a POST.
+         onsubmit asks "are you sure?"; returning false cancels the submit. -->
+    <form method="post" action="{{ url_for('delete_note', note_id=note.id) }}"
+          onsubmit="return confirm('Delete this note?');">
+        <button type="submit">Delete note</button>
+    </form>
+
+    <p><a href="{{ url_for('home') }}">← Back to all notes</a></p>
+{% endblock %}
