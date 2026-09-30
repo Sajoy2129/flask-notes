@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Edit {{ note.title }} · Flask Notes{% endblock %}
+
+{% block content %}
+    <h2>Edit note</h2>
+
+    {% if error %}
+        <p style="color: #b00020;">{{ error }}</p>
+    {% endif %}
+
+    <!-- Same fields as the "new note" form, but pre-filled with the
+         note's current text, and submitted to this note's edit URL. -->
+    <form method="post" action="{{ url_for('edit_note', note_id=note.id) }}">
+        <p>
+            <label for="title">Title</label><br>
+            <input id="title" name="title" value="{{ title or '' }}" required>
+        </p>
+        <p>
+            <label for="body">Body</label><br>
+            <textarea id="body" name="body" rows="6" cols="40">{{ body or '' }}</textarea>
+        </p>
+        <button type="submit">Save changes</button>
+        <a href="{{ url_for('show_note', note_id=note.id) }}">Cancel</a>
+    </form>
+{% endblock %}

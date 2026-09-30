@@ -97,3 +97,51 @@ def test_delete_does_not_work_with_get(app):
     assert response.status_code == 405
     with app.app_context():
         assert db.get_note(note_id) is not None
+
+
+def test_edit_page_shows_form_filled_with_note(app):
+    with app.app_context():
+        note_id = db.add_note("Old title", "Old body")
+
+    response = app.test_client().get(f"/notes/{note_id}/edit")
+
+    assert response.status_code == 200
+    assert b'value="Old title"' in response.data
+    assert b"Old body" in response.data
+
+
+def test_editing_note_saves_changes_and_redirects(app):
+    with app.app_context():
+        note_id = db.add_note("Old title", "Old body")
+
+    response = app.test_client().post(
+        f"/notes/{note_id}/edit", data={"title": "New title", "body": "New body"}
+    )
+
+    # After saving we should land back on the note's own page
+    assert response.status_code == 302
+    assert response.headers["Location"] == f"/notes/{note_id}"
+    with app.app_context():
+        note = db.get_note(note_id)
+        assert note["title"] == "New title"
+        assert note["body"] == "New body"
+
+
+def test_edit_with_empty_title_shows_error_and_keeps_old_note(app):
+    with app.app_context():
+        note_id = db.add_note("Keep this title")
+
+    response = app.test_client().post(
+        f"/notes/{note_id}/edit", data={"title": "  ", "body": "x"}
+    )
+
+    assert response.status_code == 400
+    assert b"Title is required." in response.data
+    with app.app_context():
+        assert db.get_note(note_id)["title"] == "Keep this title"
+
+
+def test_editing_missing_note_returns_404(app):
+    client = app.test_client()
+    assert client.get("/notes/999/edit").status_code == 404
+    assert client.post("/notes/999/edit", data={"title": "x"}).status_code == 404

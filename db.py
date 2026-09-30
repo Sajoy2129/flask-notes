@@ -58,6 +58,16 @@ def delete_note(note_id):
     db.commit()
 
 
+def update_note(note_id, title, body=""):
+    """Change the title and body of an existing note."""
+    db = get_db()
+    db.execute(
+        "UPDATE notes SET title = ?, body = ? WHERE id = ?",
+        (title, body, note_id),
+    )
+    db.commit()
+
+
 def add_note(title, body=""):
     """Save a new note and return its id."""
     db = get_db()
